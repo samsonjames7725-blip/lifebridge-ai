@@ -8,6 +8,12 @@ app.use(express.json());
 
 const API_KEY = process.env.OPENAI_API_KEY;
 
+/* ✅ ADD THIS (FIX YOUR ERROR) */
+app.get("/ai", (req, res) => {
+  res.send("AI is running");
+});
+
+/* AI CHAT */
 app.post("/ai", async (req, res) => {
   try {
     const userMsg = req.body.message;
@@ -33,13 +39,16 @@ app.post("/ai", async (req, res) => {
     const data = await response.json();
 
     res.json({
-      reply: data.choices[0].message.content
+      reply: data.choices?.[0]?.message?.content || "No response"
     });
 
   } catch (err) {
+    console.error(err);
     res.json({ reply: "Error occurred." });
   }
 });
 
-app.listen(3000, () => console.log("AI running"));
+/* ✅ IMPORTANT FOR RENDER */
+const PORT = process.env.PORT || 3000;
 
+app.listen(PORT, () => console.log("AI running on port " + PORT));
